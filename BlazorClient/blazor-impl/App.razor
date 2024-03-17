@@ -1,0 +1,45 @@
+﻿@using BlazorData
+@inject IJSRuntime JSRuntime
+@inject DataService DataService
+
+
+<PageTitle>Blazor Performance Test</PageTitle>
+
+<p>
+    <label>
+        Data Entry Count:
+        <input id="entry-count" @bind="EntryCount" type="number"/>
+    </label>
+
+</p>
+<button id="generate-data" @onclick=@GetData>Get Data</button>
+<button id="clear" @onclick=@Clear>Clear</button>
+<ul>
+
+    @foreach (Data entry in DataEntries)
+    {
+        <li class="entry" @key="entry.Id">
+            <span id="item-id"> @entry.Id </span> <span id="item-label"> @entry.Label </span>
+        </li>
+    }
+
+</ul>
+
+@code {
+    int EntryCount = 100;
+    List<Data> DataEntries = new List<Data> { };
+
+
+    async void GetData()
+    {
+        DataEntries = await DataService.GetEntries(EntryCount);
+        StateHasChanged(); // Needed for rerendering data that is fetched asynchronously
+    }
+
+
+    void Clear()
+    {
+        DataEntries = new List<Data> { };
+    }
+
+}
