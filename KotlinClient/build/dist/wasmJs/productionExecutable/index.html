@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Kotlin-"keyed"</title>
+    </head>
+    <body>
+        <div id='main'>
+
+            <label for="entry-count">Data Entry Count:</label>
+            <input type="number" id="entry-count" name="entry-count"/>
+            <button id="generate-data">Get Data</button>
+            <button id="clear">Clear</button>
+
+            <ul id="data-items">
+
+                <!--                    @foreach (Data entry in DataEntries)-->
+                <!--                    {-->
+                <!--                    <li class="entry" @key="entry.Id">-->
+                <!--                        <span id="item-id"> @entry.Id </span> <span id="item-label"> @entry.Label </span>-->
+                <!--                    </li>-->
+                <!--                    }-->
+
+            </ul>
+        </div>
+        <script src="kotlin-wasm-benchmark.js"></script>
+        <script type="application/javascript">
+            const unhandledError = (event, error) => {
+                if (error instanceof WebAssembly.CompileError) {
+                    document.getElementById("warning").style.display="initial";
+
+                    // Hide a Scary Webpack Overlay which is less informative in this case.
+                    const webpackOverlay = document.getElementById("webpack-dev-server-client-overlay");
+                    if (webpackOverlay != null) webpackOverlay.style.display="none";
+                }
+            }
+            addEventListener("error", (event) => unhandledError(event, event.error));
+            addEventListener("unhandledrejection", (event) => unhandledError(event, event.reason));
+        </script>
+    </body>
+</html>
