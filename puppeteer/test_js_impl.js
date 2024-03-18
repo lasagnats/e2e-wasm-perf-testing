@@ -6,7 +6,7 @@ const execCount = 60;
 
 (async () => {
   await runTestSuite(1000);
-  await runTestSuite(10000);
+  await runTestSuite(100000);
 })();
 
 // TODO: check if args are needed
@@ -51,11 +51,7 @@ async function runTest(page, dataSize) {
 
   await page.click(`#generate-data`);
 
-  // await page.waitForSelector(`#status-message`, { visible: true });
-
-  await page.evaluate(
-    (dataSize) => document.querySelector("ul").childNodes.length === dataSize
-  );
+  await page.waitForSelector(`ul > li:nth-child(${dataSize})`);
 
   const endTime = performance.now();
 
