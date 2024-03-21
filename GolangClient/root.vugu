@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Vugu E2E Performance Test</title>
+</head>
+<body>
+<div>
+    <label for="entry-count">Data Entry Count:</label>
+
+        <vgform:Input type="number" id="entry-count" name="entry-count"
+        :Value='vgform.StringPtr{&c.EntryCount}'
+        ></vgform:Input>
+        <br/>
+
+    <button type="button" id="generate-data" @click="c.Run(event)" ref="text">Run</button>
+    <button id="clear" @click="c.Clear(event)">Clear</button>
+    <ul>
+        <li vg-for='index, item := range c.DataList' vg-key="item.ID"><span vg-content="item.ID"></span>  <span vg-content="item.Label"></span></li>
+    </ul>
+</div>
+</body>
+</html>
+
+<script type="application/x-go">
+
+import (
+    "math/rand/v2"
+    "fmt"
+    "encoding/json"
+    "log"
+    "net/http"
+    "github.com/vugu/vugu/vgform"
+)
+
+type Root struct {
+    DataList []Data `vugu:"data"`
+    SelectedItemID int `vugu:"data"`
+    CurrentID int `vugu:"data"`
+    EntryCount string `vugu:"data"`
+}
+
+type Data struct {
+    ID    int
+    Label string
+}
+
+var adjectives = []string{"pretty", "large", "big", "small", "tall", "short", "long", "handsome", "plain", "quaint", "clean", "elegant", "easy", "angry", "crazy", "helpful", "mushy", "odd", "unsightly", "adorable", "important", "inexpensive", "cheap", "expensive", "fancy"}
+var colours = []string{"red", "yellow", "blue", "green", "pink", "brown", "purple", "brown", "white", "black", "orange"}
+var nouns = []string{"table", "chair", "house", "bbq", "desk", "car", "pony", "cookie", "sandwich", "burger", "pizza", "mouse", "keyboard"}
+
+func BuildData(count int, c *Root) []Data  {
+    data := make([]Data, count)
+    for i := 0; i < count; i++ {
+		data[i] = Data{
+			ID:    c.CurrentID,
+			Label: fmt.Sprintf("%s %s %s", adjectives[rand.IntN(len(adjectives))], colours[rand.IntN(len(colours))], nouns[rand.IntN(len(nouns))]),
+		}
+        c.CurrentID = c.CurrentID + 1
+	}
+    return data
+}
+
+func (c *Root) Run(event vugu.DOMEvent) {
+        ee := event.EventEnv()
+        go func() {
+
+        ee.Lock()
+        ee.UnlockRender()
+        res, err := http.Get("http://localhost:8080/data/" + c.EntryCount)
+        if err != nil {
+            log.Printf("Error fetch()ing: %v", err)
+            return
+        }
+        defer res.Body.Close()
+
+        var newb []Data
+        err = json.NewDecoder(res.Body).Decode(&newb)
+
+        ee.Lock()
+        defer ee.UnlockRender()
+        c.DataList = newb
+
+    }()
+}
+
+func (c *Root) Clear(event vugu.DOMEvent) {
+    c.DataList = []Data{}
+}
+
+</script>
