@@ -1,12 +1,14 @@
 const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
 
-const execCount = 60;
+const execCount = 3;
 
 //  Performance measuring script
 
 (async () => {
   await runTestSuite(1000);
-  await runTestSuite(100000);
+  await runTestSuite(10000);
 })();
 
 // TODO: check if args are needed
@@ -20,7 +22,6 @@ async function runTestSuite(dataSize) {
     ],
   });
   const page = await browser.newPage();
-
   let timeStorage = [];
 
   await page.goto("http://127.0.0.1:8087/");
@@ -35,17 +36,29 @@ async function runTestSuite(dataSize) {
     timeStorage[i] = { ...res, ...timeStorage[i] };
   }
 
+  let printable = "";
+  timeStorage.forEach(el => {
+    printable += `${el.heapSize};${el.deltaHeapSize};${el.time}\n`;
+  })
+
+  try {
+    fs.writeFileSync('./test.txt', printable);
+  } catch (err) {
+    console.error(err);
+  }
+
   console.log(`Results:`);
   console.log(JSON.stringify(timeStorage));
 
   await browser.close();
-  // TODO: write results to an output file
 }
 
 async function runTest(page, dataSize) {
   const initialHeapSize = (await page.metrics()).JSHeapUsedSize;
 
   await page.click(`#clear`);
+
+  await page.waitForSelector(`ul > li:nth-child(1)`, {hidden : true});
 
   const startTime = performance.now();
 
