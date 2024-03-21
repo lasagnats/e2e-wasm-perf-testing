@@ -1,0 +1,10 @@
+
+<label for="entry-count">Data Entry Count:</label>
+<input type="number" id="entry-count" [(ngModel)]="entryCount">
+<button type="button" id="generate-data" (click)="generateData()">Generate Data</button>
+<button type="button" id="clear" (click)="clear()">Clear</button>
+<ul>
+  <li *ngFor="let entry of entries">
+    {{entry.id}} {{entry.label}}
+ </li>
+</ul>
