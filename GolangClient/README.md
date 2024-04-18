@@ -1,35 +1,16 @@
 #  Vugu
 
-This is a Vugu implementation of the benchmark.
+This is a Vugu Client application that requests a specified number of data entries from the BackEnd.
+It is ended for performance testing Golang E2E chain.
 npx http-server -p 8087
 
-## Running the benchmark
+## Building the app
 
-Vugu frameworks has a dependency to golang, hence, a pre-built binary has been provided.
-
-In order to execute the benchmark with the pre-built library:
-
-1. Run `npm start` from the root directory - this should start the Vugu implementation on `http://localhost:8080/frameworks/keyed/vugu/bundled-dist/index.html`
-
-2. Execute benchmark via `npm run bench -- --framework keyed/vugu`
-
-### Building the app manually
-
-If you wish to build the app manually, you will need golang installed on your machine.
-
-To create an executable run `npm run build-prod-force` from frameworks/keyed/vugu.
-Then repeat the same steps as for running the benchmark with pre-built binary.
+Execute  `npm run build-prod-force` (or `go run dist.go`) from <projectRootDir>/GolangClient/
 
 
-## Development setup
-If you want to do some development, one of the ways is to utilize a dev server:
+## Serving the app
 
-```sh
-go install github.com/vugu/vgrun
-go work use .
-vgrun devserver.go
-```
+Serve the app by, for instance, executing `npx http-server -p 8087` from <projectRootDir>/GolangClient/bundled-dist/
 
-The dev server will make the app available at: http://localhost:8844/
-
-If VSCode is your editor of choice, consider downloading vscode-vugu extension to get proper syntax highlighting.
+**Note** Data generation happens on the backend, so for this client-side app to function, the server needs to be up & running

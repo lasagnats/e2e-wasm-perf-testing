@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 
-const execCount = 3;
+const execCount = 20;
 
 //  Performance measuring script
 
@@ -11,7 +11,6 @@ const execCount = 3;
   await runTestSuite(10000);
 })();
 
-// TODO: check if args are needed
 async function runTestSuite(dataSize) {
   const browser = await puppeteer.launch({
     headless: false,
@@ -32,7 +31,6 @@ async function runTestSuite(dataSize) {
 
   for (let i = 0; i < execCount; i++) {
     let res = await runTest(page, dataSize);
-    console.log("Finished running the test");
     timeStorage[i] = { ...res, ...timeStorage[i] };
   }
 
@@ -42,7 +40,7 @@ async function runTestSuite(dataSize) {
   })
 
   try {
-    fs.writeFileSync('./test.txt', printable);
+    fs.writeFileSync(`./results-${dataSize}.txt`, printable);
   } catch (err) {
     console.error(err);
   }
