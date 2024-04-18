@@ -21,13 +21,11 @@ export class AppComponent {
       this.http.get(url)
         .pipe(
           catchError(error => {
-            // Handle error if needed
             return throwError(error);
           })
         )
         .subscribe(response => {
-          // Handle response if needed
-          this.entries = response as Entry[];
+            this.entries = response as Entry[];
         });
   }
 
