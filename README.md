@@ -17,7 +17,11 @@ The server-side app is a simple API with a single `/data/{count} `endpoint that 
 ```
 
 This repository contains solutions written in:
-- C#/Blazor
+- C#: Blazor + ASP.NET
+- JavaScript: Angular + Express
+- Go: Vugu + Gin
+- Kotlin: Kotlin/Wasm + Spring Boot
+- Rust: Leptos + Actix-web
 
 ## Pre-requisites
 
